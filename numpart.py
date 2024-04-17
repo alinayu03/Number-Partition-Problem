@@ -2,7 +2,7 @@ import sys
 
 def main():
     flag = sys.argv[1]
-    algorithm_code = sys.argv[2]
+    algorithm_code = int(sys.argv[2])
     input_file = sys.argv[3]
 
     try:
@@ -26,7 +26,8 @@ def main():
         prepartitioned_SA(data)
 
 def karmarkar_karp(data):
-    return 
+    print("kk")
+    print(data) 
 
 def repeated_random(data):
     return
