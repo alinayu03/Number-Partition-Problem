@@ -51,6 +51,21 @@ def repeated_random(data, max_iter):
     best_residue = abs(sum(best_solution[i] * data[i] for i in range(n)))
 
     for _ in range(max_iter):
+        solution = [random.choice([-1, 1]) for _ in range(n)]
+        residue = abs(sum(solution[i]*data[i] for i in range(n)))
+        if residue < best_residue:
+            best_solution = solution[:]
+            best_residue = residue
+    print(best_residue)
+    return best_residue
+
+def hill_climbing(data, max_iter):
+    n = len(data)
+    solution = [random.choice([-1, 1]) for _ in range(n)]
+    best_solution = solution[:]
+    best_residue = abs(sum(best_solution[i] * data[i] for i in range(n)))
+
+    for _ in range(max_iter):
         i, j = random.sample(range(n), 2)
         if random.random() < 0.5:
             solution[i] = -solution[i]
@@ -60,12 +75,8 @@ def repeated_random(data, max_iter):
         if residue < best_residue:
             best_solution = solution[:]
             best_residue = residue
-    print(best_solution)
-    return best_solution
-        
-
-def hill_climbing(data, max_iter):
-    return
+    print(best_residue)
+    return best_residue
 
 def simulated_annealing(data, max_iter):
     return
