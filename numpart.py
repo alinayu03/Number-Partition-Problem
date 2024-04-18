@@ -47,6 +47,23 @@ def karmarkar_karp(data):
 
 
 def repeated_random(data, max_iter):
+    n = len(data)
+    solution = [random.choice([-1, 1]) for _ in range(n)]
+    best_solution = solution
+    for _ in range(max_iter):
+        i, j = random.sample(range(n), 2)
+        if random.random() < 0.5:
+            solution[i] = -solution[i]
+        else: 
+            solution[j] = -solution[j]
+        residue = abs(sum(solution[i]*data[i] for i in range(n)))
+        best_residue = abs(sum(solution[i]*data[i] for i in range(n)))
+        if residue < best_residue:
+            best_solution = solution
+    print(best_solution)
+    return best_solution
+        
+
 
 def hill_climbing(data, max_iter):
     return
