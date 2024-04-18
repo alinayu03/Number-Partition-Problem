@@ -1,4 +1,5 @@
 import sys
+import heapq
 
 def main():
     flag = sys.argv[1]
@@ -28,8 +29,20 @@ def main():
         prepartitioned_SA(data)
 
 def karmarkar_karp(data):
-    print("kk")
-    print(data) 
+    max_heap = [-x for x in data]
+    heapq.heapify(max_heap)
+    print(max_heap)
+    
+    while len(max_heap) > 1:
+        first = -heapq.heappop(max_heap)
+        second = -heapq.heappop(max_heap)
+        heapq.heappush(max_heap, -abs(first - second))
+        print(max_heap)
+
+    residue = -heapq.heappop(max_heap)
+    print(residue)
+    return(residue)
+
 
 def repeated_random(data):
     return
