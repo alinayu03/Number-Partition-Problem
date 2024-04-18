@@ -7,7 +7,7 @@ def main():
     algorithm_code = int(sys.argv[2])
     input_file = sys.argv[3]
     data = []
-    max_iter = 500
+    max_iter = 25000
 
     try:
         with open(input_file, 'r') as file:
@@ -33,13 +33,11 @@ def main():
 def karmarkar_karp(data):
     max_heap = [-x for x in data]
     heapq.heapify(max_heap)
-    print(max_heap)
     
     while len(max_heap) > 1:
         first = -heapq.heappop(max_heap)
         second = -heapq.heappop(max_heap)
         heapq.heappush(max_heap, -abs(first - second))
-        print(max_heap)
 
     residue = -heapq.heappop(max_heap)
     print(residue)
@@ -65,7 +63,6 @@ def repeated_random(data, max_iter):
     print(best_solution)
     return best_solution
         
-
 
 def hill_climbing(data, max_iter):
     return
