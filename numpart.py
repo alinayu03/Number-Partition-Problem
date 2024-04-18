@@ -7,7 +7,7 @@ def main():
     algorithm_code = int(sys.argv[2])
     input_file = sys.argv[3]
     data = []
-    max_iter = 50
+    max_iter = 500
 
     try:
         with open(input_file, 'r') as file:
@@ -49,7 +49,9 @@ def karmarkar_karp(data):
 def repeated_random(data, max_iter):
     n = len(data)
     solution = [random.choice([-1, 1]) for _ in range(n)]
-    best_solution = solution
+    best_solution = solution[:]
+    best_residue = abs(sum(best_solution[i] * data[i] for i in range(n)))
+
     for _ in range(max_iter):
         i, j = random.sample(range(n), 2)
         if random.random() < 0.5:
@@ -57,9 +59,9 @@ def repeated_random(data, max_iter):
         else: 
             solution[j] = -solution[j]
         residue = abs(sum(solution[i]*data[i] for i in range(n)))
-        best_residue = abs(sum(solution[i]*data[i] for i in range(n)))
         if residue < best_residue:
-            best_solution = solution
+            best_solution = solution[:]
+            best_residue = residue
     print(best_solution)
     return best_solution
         
