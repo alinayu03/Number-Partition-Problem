@@ -4,10 +4,12 @@ def main():
     flag = sys.argv[1]
     algorithm_code = int(sys.argv[2])
     input_file = sys.argv[3]
+    data = []
 
     try:
         with open(input_file, 'r') as file:
-            data = file.read()
+            for line in file:
+                data.append(int(line))
     except FileNotFoundError:
         print(f"Error: The file {input_file} does not exist.")
         sys.exit(1)
