@@ -1,6 +1,7 @@
 import sys
 import heapq
 import random
+import math
 
 def main():
     flag = sys.argv[1]
@@ -24,6 +25,8 @@ def main():
         repeated_random(data, max_iter)
     elif algorithm_code == 2:
         hill_climbing(data, max_iter)
+    elif algorithm_code == 3:
+        simulated_annealing(data, max_iter)
     elif algorithm_code == 11:
         prepartitioned_repeated_random(data_partitioned, max_iter)
     elif algorithm_code == 12:
@@ -80,7 +83,40 @@ def hill_climbing(data, max_iter):
     return best_residue
 
 def simulated_annealing(data, max_iter):
-    return
+    n = len(data)
+    solution = [random.choice([-1, 1]) for _ in range(n)]
+    residue = abs(sum(solution[i]*data[i] for i in range(n)))
+
+    best_solution = solution[:]
+    best_residue = abs(sum(best_solution[i] * data[i] for i in range(n)))
+
+    def T(iter):
+        return (10**10) * (0.8**(iter // 300))
+
+    for i in range(max_iter):
+        nei_solution = solution[:]
+        i, j = random.sample(range(n), 2)
+        if random.random() < 0.5:
+            nei_solution[i] = -nei_solution[i]
+        else: 
+            nei_solution[j] = -nei_solution[j]
+
+        nei_residue = abs(sum(nei_solution[i]*data[i] for i in range(n)))
+
+        if nei_residue < residue:
+            solution = nei_solution[:]
+            residue = nei_residue
+        else:
+            if random.random() < math.exp((-(nei_residue-residue))/T(i)):
+                solution = nei_solution[:]
+                residue = nei_residue
+
+        if residue < best_residue:
+            best_solution = solution[:]
+            best_residue = residue
+
+    print(best_residue)
+    return best_residue
 
 def prepartition(data):
     p_sequence = {} # p_sequence represents a prepartitioning
