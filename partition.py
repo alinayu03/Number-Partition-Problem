@@ -8,7 +8,7 @@ def main():
     algorithm_code = int(sys.argv[2])
     input_file = sys.argv[3]
     data = []
-    data_partitioned = []
+    data_prime = []
     max_iter = 25000
 
     try:
@@ -28,7 +28,7 @@ def main():
     elif algorithm_code == 3:
         simulated_annealing(data, max_iter)
     elif algorithm_code == 11:
-        prepartitioned_repeated_random(data_partitioned, max_iter)
+        prepartitioned_repeated_random(data_prime, max_iter)
     elif algorithm_code == 12:
         prepartitioned_HC(data, max_iter)
     elif algorithm_code == 13:
@@ -119,40 +119,48 @@ def simulated_annealing(data, max_iter):
     return best_residue
 
 def prepartition(data):
-    p_sequence = {} # p_sequence represents a prepartitioning
-    sign = [-1, 1] 
-    n = len(data)
-    i = [random.choice([1, n]) for _ in range(n)] # random index i
-    j = [random.choice([1, n]) for _ in range(n)] # random index j
+    p_sequence = {} 
+    # p_sequence represents a prepartitioning
+    n = len(data) 
+    # len of data
+    sign = [random.choice([-1, 1]) for _ in range(n)]
+    # random signs for determing signs of values
+    # needed during prepartitioning
+    i, j = random.sample(range(1, n + 1), 2)
+    # random indices needed for prepartitioning
     for index in range(len(data)):
+    # iterating over indices in data
         if index + 1 < len(data):
-            # adds element to p_sequence dict
+            # bounds
             p_sequence[data[i[index]]] = data[i[index]]
+            p_sequence[data[j[index]]] = data[j[index]]
+            # assings value to corresponding index
             # if p_i = p_j (from P = {P_1, p_2,...p_n}), make signs of data_i
-            # data_j be the same
             if p_sequence.get(data[i[index]], None) == p_sequence.get(data[j[index]], None):
+                # do they have same index
                 data[i[index]] *= sign[index % len(sign)]
                 data[j[index]] *= sign[index % len(sign)]
+                # if so, assign them the same sign,
+                # based on the sign, partition
+    data_prime = [0] * len(data)
     # list to store partitioned data
-    data_partitioned = [0] * len(data)
-    # calc partitioned data based on prepartitionig
     for index in range(len(data)):
-        p_j = p_sequence.get(data[index])
-        data_partitioned[p_j] += data[index]
+        i,j = p_sequence.get(data[index])
+        data_prime[i] = data_prime[i] + data[j]
         
     # yay data is partitioned!!!
-    return data_partitioned
+    return data_prime
 
 
-def prepartitioned_repeated_random(data_partitioned, max_iter):
-    n = len(data_partitioned)
+def prepartitioned_repeated_random(data_prime, max_iter):
+    n = len(data_prime)
     solution = [random.choice([-1, 1]) for _ in range(n)]
     best_solution = solution[:]
-    best_residue = abs(sum(best_solution[i] * data_partitioned[i] for i in range(n)))
+    best_residue = abs(sum(best_solution[i] * data_prime[i] for i in range(n)))
 
     for _ in range(max_iter):
         solution = [random.choice([-1, 1]) for _ in range(n)]
-        residue = abs(sum(solution[i]*data_partitioned[i] for i in range(n)))
+        residue = abs(sum(solution[i]*data_prime[i] for i in range(n)))
         if residue < best_residue:
             best_solution = solution[:]
             best_residue = residue
