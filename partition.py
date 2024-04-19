@@ -7,6 +7,7 @@ def main():
     algorithm_code = int(sys.argv[2])
     input_file = sys.argv[3]
     data = []
+    data_partitioned = []
     max_iter = 25000
 
     try:
@@ -24,7 +25,7 @@ def main():
     elif algorithm_code == 2:
         hill_climbing(data, max_iter)
     elif algorithm_code == 11:
-        prepartitioned_RR(data, max_iter)
+        prepartitioned_repeated_random(data_partitioned, max_iter)
     elif algorithm_code == 12:
         prepartitioned_HC(data, max_iter)
     elif algorithm_code == 13:
@@ -81,8 +82,49 @@ def hill_climbing(data, max_iter):
 def simulated_annealing(data, max_iter):
     return
 
-def prepartitioned_RR(data, max_iter):
-    return
+def prepartition(data):
+    p_sequence = {} # p_sequence represents a prepartitioning
+    sign = [-1, 1] 
+    n = len(data)
+    i = [random.choice([1, n]) for _ in range(n)] # random index i
+    j = [random.choice([1, n]) for _ in range(n)] # random index j
+    for index in range(len(data)):
+        if index + 1 < len(data):
+            # adds element to p_sequence dict
+            p_sequence[data[i[index]]] = data[i[index]]
+            # if p_i = p_j (from P = {P_1, p_2,...p_n}), make signs of data_i
+            # data_j be the same
+            if p_sequence.get(data[i[index]], None) == p_sequence.get(data[j[index]], None):
+                data[i[index]] *= sign[index % len(sign)]
+                data[j[index]] *= sign[index % len(sign)]
+    # list to store partitioned data
+    data_partitioned = [0] * len(data)
+    # calc partitioned data based on prepartitionig
+    for index in range(len(data)):
+        p_j = p_sequence.get(data[index])
+        data_partitioned[p_j] += data[index]
+        
+    # yay data is partitioned!!!
+    return data_partitioned
+
+
+def prepartitioned_repeated_random(data_partitioned, max_iter):
+    n = len(data_partitioned)
+    solution = [random.choice([-1, 1]) for _ in range(n)]
+    best_solution = solution[:]
+    best_residue = abs(sum(best_solution[i] * data_partitioned[i] for i in range(n)))
+
+    for _ in range(max_iter):
+        solution = [random.choice([-1, 1]) for _ in range(n)]
+        residue = abs(sum(solution[i]*data_partitioned[i] for i in range(n)))
+        if residue < best_residue:
+            best_solution = solution[:]
+            best_residue = residue
+    print(best_residue)
+    return best_residue
+
+
+
 
 def prepartitioned_HC(data, max_iter):
     return
